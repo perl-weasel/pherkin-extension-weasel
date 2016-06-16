@@ -9,7 +9,34 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
 =head1 SYNOPSIS
 
+   # In the pherkin config file t/.pherkin.yaml:
+   default:
+     extensions:
+       Pherkin::Extension::Weasel:
+         default_session: selenium
+         screenshots_dir: img
+         screenshot_events:
+            pre_step: 1
+            post_scenario: 1
+         sessions:
+            selenium:
+              base_url: http://localhost:5000
+              driver:
+                drv_name: Weasel::Driver::Selenium2
+                wait_timeout: 3000
+                window_size   1024x1280
+                caps:
+                   port: 4420
 
+  # Which makes the S->{ext_wsl} field available,
+  # pointing at the default session, in steps of features or scenarios
+  # marked with the '@weasel' tag so in the steps you can use:
+
+  use Weasel::FindExpanders::HTML;
+
+  Then qr/I see an input element with label XYZ/, sub {
+    S->{ext_wsl}->page->find('*labelled', text => 'XYZ');
+  };
 
 =cut
 
@@ -56,7 +83,7 @@ sub pre_execute {
         my $sess = $ext_config->{$sess_name};
         my $drv = use_module($sess->{driver}->{drv_name});
         $drv = $drv->new(%{$sess->{driver}});
-        my $session = Weasel::Session->new(driver => $drv);
+        my $session = Weasel::Session->new(%$sess, driver => $drv);
         $sessions{$sess_name} = $session;
     }
     my $weasel = Weasel->new(
@@ -76,6 +103,8 @@ sub pre_scenario {
     if (grep { $_ eq 'weasel'} @{$scenario->tags}) {
         $stash->{ext_wsl} = $self->_weasel->session;
         $self->_weasel->session->start;
+
+        $self->_save_screenshot("scenario", "pre");
     }
 }
 
@@ -83,8 +112,23 @@ sub pre_scenario {
 sub post_scenario {
     my ($self, $scenario, $feature_stash, $stash) = @_;
 
+    return if ! defined $stash->{ext_wsl};
+    $self->_save_screenshot("scenario", "post");
     $stash->{ext_wsl}->stop
-        if defined $stash->{ext_wsl};
+}
+
+sub pre_step {
+    my ($self, $feature, $context) = @_;
+
+    return if ! defined $context->stash->{scenario}->{ext_wsl};
+    $self->_save_screenshot("step", "pre");
+}
+
+sub post_step {
+    my ($self, $feature, $context) = @_;
+
+    return if ! defined $context->stash->{scenario}->{ext_wsl};
+    $self->_save_screenshot("step", "post");
 }
 
 =back
@@ -132,6 +176,7 @@ has screenshot_events => (is => 'ro',
                           handles => {
                               screenshot_on => 'set',
                               screenshot_off => 'delete',
+                              screenshot_event_on => 'get',
                           },
     );
 
@@ -144,6 +189,31 @@ has _weasel => (is => 'rw',
                 isa => 'Weasel');
 
 =back
+
+=head1 INTERNALS
+
+=over
+
+=item _save_screenshot($event, $phase)
+
+=cut
+
+my $img_num = 0;
+
+sub _save_screenshot {
+    my ($self, $event, $phase) = @_;
+
+    return if ! $self->screenshots_dir;
+    return if ! $self->screenshot_event_on("$phase-$event");
+
+    my $img_name = "$event-$phase-" . ($img_num++) . '.png';
+    open my $fh, ">", $self->screenshots_dir . '/' . $img_name;
+    $self->_weasel->session->screenshot($fh);
+    close $fh;
+}
+
+=back
+
 
 =head1 CONTRIBUTORS
 
