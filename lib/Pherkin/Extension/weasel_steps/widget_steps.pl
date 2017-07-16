@@ -68,7 +68,7 @@ Then qr/I should see a drop down "(.*)"( with these items:)?/, sub {
     my $label_text = $1;
     my $want_values = $2;
 
-    my $select = S->{ext_wsl}->page->find('*select', label => $label_text);
+    my $select = S->{ext_wsl}->page->find('*select', text => $label_text);
     ok($select, "Found the drop down with label '$label_text'");
 
     if ($want_values) {
