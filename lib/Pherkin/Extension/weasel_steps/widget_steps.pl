@@ -5,13 +5,6 @@ use warnings;
 
 use Test::BDD::Cucumber::StepFile;
 
-#!perl
-
-use strict;
-use warnings;
-
-use Test::BDD::Cucumber::StepFile;
-
 
 Then qr/I should see a (radio button|textbox|password box) "(.*)"/, sub {
     my $want_type = $1;
@@ -68,11 +61,13 @@ Then qr/I should see a drop down "(.*)"( with these items:)?/, sub {
     my $label_text = $1;
     my $want_values = $2;
 
-    my $select = S->{ext_wsl}->page->find('*select', text => $label_text);
+    my @select = S->{ext_wsl}->page->find_all('*labeled', text => $label_text);
+    @select = grep { $_->is_displayed } @select;
+    my $select = shift @select;
     ok($select, "Found the drop down with label '$label_text'");
 
     if ($want_values) {
-        ok($select->find_option(text => $_),
+        ok($select->find_option($_->{class}),
            "Found option '$_' of dropdown '$label_text'")
             for (@{ C->data });
     }
