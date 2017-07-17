@@ -207,7 +207,7 @@ sub _save_screenshot {
     return if ! $self->screenshot_event_on("$phase-$event");
 
     $img_num{$event}++ if $phase !~ /post/;
-    my $img_name = "$event-$phase-" . $img_num{$event} . '.png';
+    my $img_name = $img_num{$event} . "-$event-$phase" . '.png';
     open my $fh, ">", $self->screenshots_dir . '/' . $img_name;
     $self->_weasel->session->screenshot($fh);
     close $fh;
