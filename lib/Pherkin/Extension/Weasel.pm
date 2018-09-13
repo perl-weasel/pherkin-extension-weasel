@@ -35,7 +35,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
   use Weasel::FindExpanders::HTML;
 
   Then qr/I see an input element with label XYZ/, sub {
-    S->{ext_wsl}->page->find('*labelled', text => 'XYZ');
+    S->{ext_wsl}->page->find('*labeled', text => 'XYZ');
   };
 
 =cut
