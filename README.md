@@ -5,7 +5,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
 # VERSION
 
-0.01
+0.02
 
 # SYNOPSIS
 
@@ -20,7 +20,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
               # write screenshots to img/
               screenshots_dir: img
               screenshot_events:
-              # generate screenshots before every step 
+              # generate screenshots before every step
               pre_step: 1
               # and at the end of every scenario
               post_scenario: 1
@@ -46,7 +46,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 ```
 # DESCRIPTION
 
-This module implements an extension to [Test::BDD::Cucumber 
+This module implements an extension to [Test::BDD::Cucumber
 (aka pherkin)](https://github.com/pjlsergeant/test-bdd-cucumber-perl),
 providing access to a
 [`Weasel::Session`](https://github.com/perl-weasel/weasel/) and the
@@ -58,12 +58,20 @@ following features:
     * Page navigation
     * Page content assertion
 
+Intended features to be implemented:
+
+  * Browser session transcript recording, annotating browser
+    manipulation invocations with Weasel function return
+    values and screenshots.
+
+(More ideas welcome, please log issues.)
+
 # INSTALLATION
 
 ```sh
   # Install Pherkin::Extension::Weasel with its dependencies
   $ cpanm Pherkin::Extension::Weasel
-  
+
   # Install the (currently only) Weasel web driver
   $ cpanm Weasel::Driver::Selenium2
 ```

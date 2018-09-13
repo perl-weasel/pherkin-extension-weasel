@@ -104,9 +104,8 @@ When qr/I enter (([^"].*)|"(.*)") into "(.*)"/, sub {
     my $value = $3;
     my $label = $4;
 
-    my $element = S->{ext_wsl}->session->find(
-        S->{ext_wsl}->session->page,
-        "*labeled", { text => $label });
+    my $element = S->{ext_wsl}->page->find(
+        "*labeled", text => $label);
     ok($element, "found element with label '$label'");
     $value ||= C->stash->{feature}->{$param};
     $element->click;
@@ -115,9 +114,8 @@ When qr/I enter (([^"].*)|"(.*)") into "(.*)"/, sub {
 
 When qr/I enter these values:/, sub {
     foreach my $field (@{ C->data }) {
-        my $elm = S->{ext_wsl}->session->find(
-            S->{ext_wsl}->session->page,
-            "*labeled", { text => $field->{label} });
+        my $elm = S->{ext_wsl}->page->find(
+            "*labeled", text => $field->{label});
         if ($elm->can("find_option")) {
             $elm->find_option($field->{value})->click;
         }
