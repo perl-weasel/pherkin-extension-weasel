@@ -5,7 +5,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
 =head1 VERSION
 
-0.03
+0.04
 
 =head1 SYNOPSIS
 
@@ -45,7 +45,7 @@ package Pherkin::Extension::Weasel;
 use strict;
 use warnings;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 
 use Module::Runtime qw(use_module);
@@ -207,9 +207,14 @@ sub _save_screenshot {
     return if ! $self->screenshot_event_on("$phase-$event");
 
     my $img_name = "$event-$phase-" . ($img_num++) . '.png';
-    open my $fh, ">", $self->screenshots_dir . '/' . $img_name;
-    $self->_weasel->session->screenshot($fh);
-    close $fh;
+    if (open my $fh, ">", $self->screenshots_dir . '/' . $img_name) {
+        $self->_weasel->session->screenshot($fh);
+        close $fh
+            or warn "Couldn't close screenshot image '$img_name': $!";
+    }
+    else {
+        warn "Couldn't open screenshot image '$img_name': $!";
+    }
 }
 
 =back
