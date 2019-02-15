@@ -48,7 +48,9 @@ use warnings;
 our $VERSION = '0.04';
 
 
+use File::Share ':all';
 use Module::Runtime qw(use_module);
+use Template;
 use Test::BDD::Cucumber::Extension;
 
 use Weasel;
@@ -57,6 +59,70 @@ use Weasel::Session;
 use Moose;
 extends 'Test::BDD::Cucumber::Extension';
 
+
+has _log => (is => 'rw', isa => 'Maybe[HashRef]');
+
+has _weasel_log => (is => 'rw', isa => 'Maybe[ArrayRef]');
+
+has feature_template => (is => 'ro', isa => 'Str',
+                         default => 'pherkin-weasel-html-log-default.html');
+
+has logging_dir => (is => 'ro', isa => 'Maybe[Str]');
+
+has templates_dir => (is => 'ro', isa => 'Str',
+                      default => sub {
+                          my $dist = __PACKAGE__;
+                          $dist =~ s/::/-/g;
+                          return dist_dir $dist;
+                      });
+
+
+sub _weasel_log_hook {
+    my $self = shift;
+    my ($event, $log_item, $something) = @_;
+    my $log_text = (ref $log_item eq 'CODE') ? $log_item->() : $log_item;
+
+    my $wsl_log = $self->_weasel_log;
+    if ($wsl_log) {
+        push @{$wsl_log}, {
+            text => $log_text
+        };
+    }
+}
+
+sub _flush_log {
+    my $self = shift;
+    my $log = $self->_log;
+    return if ! $log;
+
+    $log->{template}->process(
+        $self->feature_template,
+        { %$log },
+        'feature1.html',
+        { binmode => ':utf8' })
+        or die $log->{template}->error();
+
+    return File::Spec->catfile($self->logging_dir, 'feature1.html');
+}
+
+sub _initialize_logging {
+    my ($self) = @_;
+
+    if ($self->logging_dir) { # the user wants logging...
+        die 'Logging directory: ' . $self->logging_dir . ' does not exist'
+            if ! -d $self->logging_dir;
+
+        $self->_log(
+            {
+                features => [],
+                template => Template->new(
+                    {
+                        INCLUDE_PATH => $self->templates_dir,
+                        OUTPUT_PATH => $self->logging_dir,
+                    }),
+            });
+    }
+}
 
 =head1 Test::BDD::Cucumber::Extension protocol implementation
 
@@ -88,10 +154,32 @@ sub pre_execute {
     }
     my $weasel = Weasel->new(
         default_session => $self->default_session,
-        sessions => \%sessions);
+        sessions => \%sessions,
+        log_hook => sub { $self->_weasel_log_hook(@_) });
     $self->_weasel($weasel);
+    $self->_initialize_logging;
 }
 
+=item pre_feature
+
+=cut
+
+sub pre_feature {
+    my ($self, $feature, $feature_stash) = @_;
+
+    my $log = $self->_log;
+    if ($log) {
+        my $feature_log = {
+            scenarios => [],
+            title => $feature->name,
+            satisfaction => join("\n",
+                                 map { $_->content }
+                                 @{$feature->satisfaction})
+        };
+        push @{$log->{features}}, $feature_log;
+        $log->{feature} = $feature_log;
+    }
+}
 
 =item pre_scenario
 
@@ -105,6 +193,16 @@ sub pre_scenario {
         $self->_weasel->session->start;
 
         $self->_save_screenshot("scenario", "pre");
+    }
+
+    my $log = $self->_log;
+    if ($log) {
+        my $scenario_log = {
+            rows => [],
+            title => $scenario->name,
+        };
+        push @{$log->{feature}->{scenarios}}, $scenario_log;
+        $log->{scenario} = $scenario_log;
     }
 }
 
