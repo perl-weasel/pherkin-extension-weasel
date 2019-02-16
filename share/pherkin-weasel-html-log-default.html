@@ -8,30 +8,34 @@
     <h1 class="feature">[% feature.title | html %]</h1>
     <p>[% feature.satisfaction | html %]</p>
     [% FOR scenario IN feature.scenarios %]
-    <h2 class="scenario">[% scenario.title | html %]</h2>
-    <table>
-      <colgroup>
-        <col class="steps">
-        <col class="session-log">
-      </colgroup>
-      [% FOR row IN scenario.rows %]
-      <tr>
-        [% IF row.screenshot %]
-        <td colspan="3">
-          <img src="[% row.screenshot.location | uri %]"
-               alt="[% row.screenshot.description | html %]" />
-        </td>
-        [% ELSIF row.step %]
-        <td>[% row.step.text | html %]</td>
-        <td></td>
-        <td></td>
-        [% ELSIF row.log %]
-        <td></td>
-        <td></td>
-        <td>[% row.log.text | html %]</td>
-        [% END %]
-      </tr>
-      [% END %]
-    [% END %]
+    <section class="scenario">
+      <h2 class="scenario">[% scenario.title | html %]</h2>
+      <table>
+        <colgroup>
+          <col class="steps">
+          <col class="session-log">
+        </colgroup>
+[% FOR row IN scenario.rows -%]
+        <tr>
+[% IF row.screenshot -%]
+          <td colspan="3">
+            <img src="[% row.screenshot.location | uri %]"
+                 alt="[% row.screenshot.description | html %]"
+                 class="[% row.screenshot.classes.join(' ') %]" />
+          </td>
+[% ELSIF row.step -%]
+          <td>[% row.step.text | html %]</td>
+          <td></td>
+          <td>[% row.step.result | html %]</td>
+[% ELSIF row.log -%]
+          <td></td>
+          <td></td>
+          <td>[% row.log.text | html %]</td>
+[% END -%]
+        </tr>
+[% END -%]
+      </table>
+    </section>
+[% END -%]
   </body>
 </html>

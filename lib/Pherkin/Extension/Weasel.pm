@@ -82,10 +82,12 @@ sub _weasel_log_hook {
     my ($event, $log_item, $something) = @_;
     my $log_text = (ref $log_item eq 'CODE') ? $log_item->() : $log_item;
 
-    my $wsl_log = $self->_weasel_log;
-    if ($wsl_log) {
-        push @{$wsl_log}, {
-            text => $log_text
+    my $log = $self->_log;
+    if ($log) {
+        push @{$log->{scenario}->{rows}}, {
+            log => {
+                text => $log_text
+            },
         };
     }
 }
@@ -97,7 +99,7 @@ sub _flush_log {
 
     $log->{template}->process(
         $self->feature_template,
-        { %$log },
+        { %{$log} }, # using the $log object directly destroys it...
         'feature1.html',
         { binmode => ':utf8' })
         or die $log->{template}->error();
@@ -149,13 +151,17 @@ sub pre_execute {
         my $sess = $ext_config->{$sess_name};
         my $drv = use_module($sess->{driver}->{drv_name});
         $drv = $drv->new(%{$sess->{driver}});
-        my $session = Weasel::Session->new(%$sess, driver => $drv);
+        my $session = Weasel::Session->new(
+            %$sess,
+            driver => $drv,
+            log_hook => sub { $self->_weasel_log_hook(@_) },
+            );
         $sessions{$sess_name} = $session;
     }
     my $weasel = Weasel->new(
         default_session => $self->default_session,
         sessions => \%sessions,
-        log_hook => sub { $self->_weasel_log_hook(@_) });
+            );
     $self->_weasel($weasel);
     $self->_initialize_logging;
 }
@@ -181,6 +187,19 @@ sub pre_feature {
     }
 }
 
+=item post_feature
+
+=cut
+
+sub post_feature {
+    my ($self, $feature, $feature_stash) = @_;
+
+    my $log = $self->_log;
+    if ($log) {
+        $log->{feature} = undef;
+    }
+}
+
 =item pre_scenario
 
 =cut
@@ -192,17 +211,17 @@ sub pre_scenario {
         $stash->{ext_wsl} = $self->_weasel->session;
         $self->_weasel->session->start;
 
-        $self->_save_screenshot("scenario", "pre");
-    }
+        my $log = $self->_log;
+        if ($log) {
+            my $scenario_log = {
+                rows => [],
+                title => $scenario->name,
+            };
+            push @{$log->{feature}->{scenarios}}, $scenario_log;
+            $log->{scenario} = $scenario_log;
+        }
 
-    my $log = $self->_log;
-    if ($log) {
-        my $scenario_log = {
-            rows => [],
-            title => $scenario->name,
-        };
-        push @{$log->{feature}->{scenarios}}, $scenario_log;
-        $log->{scenario} = $scenario_log;
+        $self->_save_screenshot("scenario", "pre");
     }
 }
 
@@ -212,6 +231,12 @@ sub post_scenario {
 
     return if ! defined $stash->{ext_wsl};
     $self->_save_screenshot("scenario", "post");
+
+    my $log = $self->_log;
+    if ($log) {
+        $log->{scenario} = undef;
+    }
+
     $stash->{ext_wsl}->stop
 }
 
@@ -220,13 +245,26 @@ sub pre_step {
 
     return if ! defined $context->stash->{scenario}->{ext_wsl};
     $self->_save_screenshot("step", "pre");
+    my $log = $self->_log;
+    if ($log) {
+        push @{$log->{scenario}->{rows}}, {
+            step => {
+                text => $context->step->text,
+            },
+        };
+    }
 }
 
 sub post_step {
-    my ($self, $feature, $context) = @_;
+    my ($self, $feature, $context, $failed) = @_;
 
     return if ! defined $context->stash->{scenario}->{ext_wsl};
     $self->_save_screenshot("step", "post");
+    my $log = $self->_log;
+    if ($log) {
+        ${$log->{scenario}->{rows}}[-1]->{step}->{result} =
+            $failed ? 'FAIL' : 'success';
+    }
 }
 
 =back
@@ -312,6 +350,17 @@ sub _save_screenshot {
     }
     else {
         warn "Couldn't open screenshot image '$img_name': $!";
+    }
+
+    my $log = $self->_log;
+    if ($log) {
+        push @{$log->{scenario}->{rows}}, {
+            screenshot => {
+                location => $img_name,
+                description => "$phase $event: ",
+                classes => [ $event, $phase, "$phase-$event" ],
+            },
+        };
     }
 }
 
