@@ -49,6 +49,7 @@ our $VERSION = '0.04';
 
 
 use File::Share ':all';
+use Digest::MD5 qw(md5_hex);
 use Module::Runtime qw(use_module);
 use Template;
 use Test::BDD::Cucumber::Extension;
@@ -97,14 +98,15 @@ sub _flush_log {
     my $log = $self->_log;
     return if ! $log;
 
+    my $f = md5_hex($log->{feature}->{title}) . '.html';
     $log->{template}->process(
         $self->feature_template,
         { %{$log} }, # using the $log object directly destroys it...
-        'feature1.html',
+        $f,
         { binmode => ':utf8' })
         or die $log->{template}->error();
 
-    return File::Spec->catfile($self->logging_dir, 'feature1.html');
+    return File::Spec->catfile($self->logging_dir, $f);
 }
 
 sub _initialize_logging {
