@@ -199,6 +199,7 @@ sub post_feature {
     my $log = $self->_log;
     if ($log) {
         $log->{feature} = undef;
+        $self->_flush_log;
     }
 }
 
@@ -237,13 +238,14 @@ sub post_scenario {
     my $log = $self->_log;
     if ($log) {
         $log->{scenario} = undef;
+        $self->_flush_log;
     }
 
     $stash->{ext_wsl}->stop
 }
 
 sub pre_step {
-    my ($self, $feature, $context) = @_;
+    my ($self, $step, $context) = @_;
 
     return if ! defined $context->stash->{scenario}->{ext_wsl};
     $self->_save_screenshot("step", "pre");
@@ -251,21 +253,28 @@ sub pre_step {
     if ($log) {
         push @{$log->{scenario}->{rows}}, {
             step => {
-                text => $context->step->text,
+                text => $step->verb_original . ' ' . $step->text,
             },
         };
     }
 }
 
 sub post_step {
-    my ($self, $feature, $context, $failed) = @_;
+    my ($self, $step, $context, $result) = @_;
 
     return if ! defined $context->stash->{scenario}->{ext_wsl};
     $self->_save_screenshot("step", "post");
     my $log = $self->_log;
     if ($log) {
-        ${$log->{scenario}->{rows}}[-1]->{step}->{result} =
-            $failed ? 'FAIL' : 'success';
+        if (ref $result) {
+            ${$log->{scenario}->{rows}}[-1]->{step}->{result} =
+                $result->result;
+        }
+        else {
+            ${$log->{scenario}->{rows}}[-1]->{step}->{result} =
+                '<missing>'; # Pherkin <= 0.56
+        }
+        $self->_flush_log;
     }
 }
 
@@ -394,7 +403,7 @@ L<perl-weasel@googlegroups.com|mailto:perl-weasel@googlegroups.com>.
 
 =head1 COPYRIGHT
 
- (C) 2016-2018  Erik Huelsmann
+ (C) 2016-2019  Erik Huelsmann
 
 Licensed under the same terms as Perl.
 
