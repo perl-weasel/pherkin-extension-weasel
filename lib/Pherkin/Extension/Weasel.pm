@@ -253,7 +253,8 @@ sub pre_step {
     if ($log) {
         push @{$log->{scenario}->{rows}}, {
             step => {
-                text => $step->verb_original . ' ' . $step->text,
+                text => $context->step->verb_original
+                    . ' ' . $context->step->text,
             },
         };
     }
