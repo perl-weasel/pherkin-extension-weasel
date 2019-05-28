@@ -96,7 +96,7 @@ sub _weasel_log_hook {
 sub _flush_log {
     my $self = shift;
     my $log = $self->_log;
-    return if ! $log;
+    return if ! $log || ! $log->{feature};
 
     my $f = md5_hex($log->{feature}->{title}) . '.html';
     $log->{template}->process(
