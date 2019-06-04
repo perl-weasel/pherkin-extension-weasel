@@ -5,7 +5,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
 =head1 VERSION
 
-0.05
+0.07
 
 =head1 SYNOPSIS
 
@@ -45,7 +45,7 @@ package Pherkin::Extension::Weasel;
 use strict;
 use warnings;
 
-our $VERSION = '0.05';
+our $VERSION = '0.07';
 
 
 use File::Share ':all';
@@ -98,7 +98,13 @@ sub _flush_log {
     my $log = $self->_log;
     return if ! $log || ! $log->{feature};
 
-    my $f = md5_hex($log->{feature}->{title}) . '.html';
+    my $f = $log->{feature}->{filename};
+    if ( $f ) {
+        $f =~ s/\//_/g;
+        $f =~ s/\.feature/.html/g;
+    } else {
+        $f = md5_hex($log->{feature}->{title}) . '.html';
+    }
     $log->{template}->process(
         $self->feature_template,
         { %{$log} }, # using the $log object directly destroys it...
@@ -179,6 +185,7 @@ sub pre_feature {
     if ($log) {
         my $feature_log = {
             scenarios => [],
+            filename => $feature->{document}->{filename},
             title => $feature->name,
             satisfaction => join("\n",
                                  map { $_->content }

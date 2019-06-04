@@ -1,3 +1,6 @@
+** 0.07 / 2019-06-04
+   - Use feature filename for logging
+
 ** 0.06 / 2019-02-22
    - Actually write the HTML log when steps/scenarios/features
      complete
