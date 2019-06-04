@@ -1,3 +1,6 @@
+** 0.08 / 2019-06-22
+   - Remove empty screen captures
+
 ** 0.07 / 2019-06-21
    - Change minimum Perl version to static declaration in dist.ini
    - Resolve undefined variable warnings with logging enabled
@@ -7,7 +10,6 @@
      - no screenshots without logging
      - prevent screenshots from various features overwriting each other
      - add styling in html log for screenshots
-
 ** 0.06 / 2019-02-22
    - Actually write the HTML log when steps/scenarios/features
      complete
