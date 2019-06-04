@@ -50,6 +50,7 @@ our $VERSION = '0.07';
 
 use File::Share ':all';
 use Digest::MD5 qw(md5_hex);
+use Imager;
 use Module::Runtime qw(use_module);
 use Template;
 use Test::BDD::Cucumber::Extension;
@@ -358,7 +359,8 @@ sub _save_screenshot {
     return if ! $self->screenshot_event_on("$phase-$event");
 
     my $img_name = "$event-$phase-" . ($img_num++) . '.png';
-    if (open my $fh, ">", $self->screenshots_dir . '/' . $img_name) {
+    my $path_img_name = $self->screenshots_dir . '/' . $img_name;
+    if (open my $fh, ">", $path_img_name) {
         $self->_weasel->session->screenshot($fh);
         close $fh
             or warn "Couldn't close screenshot image '$img_name': $!";
@@ -366,7 +368,13 @@ sub _save_screenshot {
     else {
         warn "Couldn't open screenshot image '$img_name': $!";
     }
-
+    my $img = Imager->new(); #  Empty image (size is 0 by 0)
+    $img->open(file=>$path_img_name,type=>'png'); # Read image from file
+    # If image is blank
+    if ($img->getcolorcount() == 1 ) {
+        unlink($path_img_name);
+        return;
+    }
     my $log = $self->_log;
     if ($log) {
         push @{$log->{scenario}->{rows}}, {
