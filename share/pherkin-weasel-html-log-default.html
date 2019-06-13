@@ -20,7 +20,7 @@
   <body>
     <h1 class="feature">[% feature.title | html %]</h1>
     <p>[% feature.satisfaction | html %]</p>
-    [% FOR scenario IN feature.scenarios %]
+[% FOR scenario IN feature.scenarios %]
     <section class="scenario">
       <h2 class="scenario">[% scenario.title | html %]</h2>
       <table>
@@ -29,23 +29,28 @@
           <col class="session-log">
         </colgroup>
 [% FOR row IN scenario.rows -%]
-        <tr>
 [% IF row.screenshot -%]
-          <td colspan="3">
+        <tr class="screenshot">
+          <td></td>
+          <td colspan="2">
             <img src="[% row.screenshot.location | uri %]"
                  alt="[% row.screenshot.description | html %]"
                  class="[% row.screenshot.classes.join(' ') %]" />
           </td>
+        </tr>
 [% ELSIF row.step -%]
+        <tr class="step">
           <td>[% row.step.text | html %]</td>
           <td></td>
           <td>[% row.step.result | html %]</td>
+        </tr>
 [% ELSIF row.log -%]
+        <tr class="result">
           <td></td>
           <td></td>
           <td>[% row.log.text | html %]</td>
-[% END -%]
         </tr>
+[% END -%]
 [% END -%]
       </table>
     </section>
