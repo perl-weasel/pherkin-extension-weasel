@@ -112,6 +112,9 @@ sub _flush_log {
 sub _initialize_logging {
     my ($self) = @_;
 
+    if ($self->screenshots_dir && !$self->logging_dir) {
+        die "Unable to generate screenshots when logging is disabled";
+    }
     if ($self->logging_dir) { # the user wants logging...
         die 'Logging directory: ' . $self->logging_dir . ' does not exist'
             if ! -d $self->logging_dir;
