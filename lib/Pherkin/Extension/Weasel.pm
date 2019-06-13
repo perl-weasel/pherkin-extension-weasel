@@ -355,7 +355,7 @@ sub _save_screenshot {
     return if ! $self->screenshots_dir;
     return if ! $self->screenshot_event_on("$phase-$event");
 
-    my $img_name = "$event-$phase-" . ($img_num++) . '.png';
+    my $img_name = md5_hex($self->_log->{feature}->{filename}) . "-$event-$phase-" . ($img_num++) . '.png';
     if (open my $fh, ">", $self->screenshots_dir . '/' . $img_name) {
         $self->_weasel->session->screenshot($fh);
         close $fh
