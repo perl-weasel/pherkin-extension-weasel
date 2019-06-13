@@ -265,7 +265,7 @@ sub pre_step {
 }
 
 sub post_step {
-    my ($self, $step, $context, $result) = @_;
+    my ($self, $step, $context, $fail, $result) = @_;
 
     return if ! defined $context->stash->{scenario}->{ext_wsl};
     $self->_save_screenshot("step", "post");
