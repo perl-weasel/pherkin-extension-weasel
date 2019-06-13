@@ -98,7 +98,7 @@ sub _flush_log {
     my $log = $self->_log;
     return if ! $log || ! $log->{feature};
 
-    my $f = md5_hex($log->{feature}->{title}) . '.html';
+    my $f = md5_hex($log->{feature}->{filename}) . '.html';
     $log->{template}->process(
         $self->feature_template,
         { %{$log} }, # using the $log object directly destroys it...
@@ -180,6 +180,7 @@ sub pre_feature {
         my $feature_log = {
             scenarios => [],
             title => $feature->name,
+            filename => $feature->document->filename,
             satisfaction => join("\n",
                                  map { $_->content }
                                  @{$feature->satisfaction})
