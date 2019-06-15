@@ -202,8 +202,8 @@ sub post_feature {
 
     my $log = $self->_log;
     if ($log) {
-        $log->{feature} = undef;
         $self->_flush_log;
+        $log->{feature} = undef;
     }
 }
 
@@ -241,8 +241,8 @@ sub post_scenario {
 
     my $log = $self->_log;
     if ($log) {
-        $log->{scenario} = undef;
         $self->_flush_log;
+        $log->{scenario} = undef;
     }
 
     $stash->{ext_wsl}->stop
