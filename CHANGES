@@ -2,6 +2,8 @@
    - In the HTML logs, link to screenshots, even if those are in a
      separate directory (using relative URLs)
    - Add an index HTML file, for an overview of the feature logs
+   - Don't generate empty screenshots at the start of a session
+   - Eliminate logging of internal session interaction (e.g. screenshots)
 
 ** 0.07 / 2019-06-21
    - Change minimum Perl version to static declaration in dist.ini

@@ -81,6 +81,7 @@ has templates_dir => (is => 'ro', isa => 'Str',
                           return dist_dir $dist;
                       });
 
+our $tmp_disable_logging = 0;
 
 sub _weasel_log_hook {
     my $self = shift;
@@ -88,7 +89,7 @@ sub _weasel_log_hook {
     my $log_text = (ref $log_item eq 'CODE') ? $log_item->() : $log_item;
 
     my $log = $self->_log;
-    if ($log) {
+    if ($log and not $tmp_disable_logging) {
         push @{$log->{scenario}->{rows}}, {
             log => {
                 text => $log_text
@@ -415,9 +416,13 @@ sub _save_screenshot {
 
     return if ! $self->screenshots_dir;
     return if ! $self->screenshot_event_on("$phase-$event");
+    return if $self->_weasel->session->state ne 'started';
 
     my $img_name = md5_hex($self->_log->{feature}->{filename}) . "-$event-$phase-" . ($img_num++) . '.png';
     if (open my $fh, ">", $self->screenshots_dir . '/' . $img_name) {
+        local $tmp_disable_logging = 1;
+        # As this is a Weasel 'command' we concoct up ourselves, don't include
+        # it in the logs for the session...
         $self->_weasel->session->screenshot($fh);
         close $fh
             or warn "Couldn't close screenshot image '$img_name': $!";
