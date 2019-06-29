@@ -33,7 +33,7 @@
         <tr class="screenshot">
           <td></td>
           <td colspan="2">
-            <img src="[% row.screenshot.location | uri %]"
+            <img src="[% screens_base_url %][% row.screenshot.location | uri %]"
                  alt="[% row.screenshot.description | html %]"
                  class="[% row.screenshot.classes.join(' ') %]" />
           </td>
@@ -55,5 +55,15 @@
       </table>
     </section>
 [% END -%]
+<!--
+---
+title: [% feature.title | html %]
+filename: [% feature.filename | html %]
+log_filename: [% feature.log_filename | html %]
+stats:
+  success: [% feature.successes | html %]
+  fail: [% feature.failures | html %]
+---
+-->
   </body>
 </html>
