@@ -165,7 +165,7 @@ sub _flush_log {
 
     $self->_update_index;
 
-    return $log->{feature}->{log_filename};
+    return File::Spec->catfile($self->logging_dir, $f);
 }
 
 sub _initialize_logging {
