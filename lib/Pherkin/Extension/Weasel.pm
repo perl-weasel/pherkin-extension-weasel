@@ -17,7 +17,9 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
          screenshots_dir: img
          screenshot_events:
             pre_step: 1
+            post_step: 1
             post_scenario: 1
+            post_feature: 1
          sessions:
             selenium:
               base_url: http://localhost:5000
@@ -165,7 +167,7 @@ sub _flush_log {
 
     $self->_update_index;
 
-    return $log->{feature}->{log_filename};
+    return File::Spec->catfile($self->logging_dir, $f);
 }
 
 sub _initialize_logging {
