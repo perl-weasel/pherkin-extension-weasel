@@ -198,7 +198,7 @@ like($content, qr!<img src="[a-z0-9./]+-scenario-post-\d+\.png"!,
 
 
 # early versions (at least Pherkin <= 0.56) repoort "<missing>" due to a bug
-like($content, qr!<td>(?:FAIL|&lt;missing&gt;)</td>!,
+like($content, qr!<td class="[a-zA-Z0-9\s]+">(?:FAIL|&lt;missing&gt;)</td>!,
      q{Step status correctly included in the logs});
 
 
