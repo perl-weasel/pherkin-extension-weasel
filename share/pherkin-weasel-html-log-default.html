@@ -54,7 +54,8 @@
         <tr class="step">
           <td>[% row.step.text | html %]</td>
           <td></td>
-          <td class="[% row.step.result %]">[% row.step.result | html %]</td>
+          <td class="[% row.step.result.remove('[<>]') # compensate '<missing>'
+                     %]">[% row.step.result | html %]</td>
         </tr>
 [% FOR log IN row.step.logs -%]
         <tr class="log">
