@@ -92,10 +92,8 @@ sub _weasel_log_hook {
 
     my $log = $self->_log;
     if ($log and not $tmp_disable_logging) {
-        push @{$log->{scenario}->{rows}}, {
-            log => {
-                text => $log_text
-            },
+        push @{$log->{step}->{logs}}, {
+            text => $log_text
         };
     }
 }
@@ -313,34 +311,38 @@ sub pre_step {
     my ($self, $step, $context) = @_;
 
     return if ! defined $context->stash->{scenario}->{ext_wsl};
-    $self->_save_screenshot("step", "pre");
+
+    # In the logs, first announce the step, *then* show the
+    #  screenshot
     my $log = $self->_log;
     if ($log) {
-        push @{$log->{scenario}->{rows}}, {
-            step => {
-                text => $context->step->verb_original
-                    . ' ' . $context->step->text,
-            },
+        my $step = {
+            text => $context->step->verb_original
+                . ' ' . $context->step->text,
+            logs => [],
+            result => '',
         };
+        $log->{step} = $step;
+        push @{$log->{scenario}->{rows}}, { step => $step };
     }
+    $self->_save_screenshot("step", "pre");
 }
 
 sub post_step {
     my ($self, $step, $context, $fail, $result) = @_;
 
     return if ! defined $context->stash->{scenario}->{ext_wsl};
-    $self->_save_screenshot("step", "post");
     my $log = $self->_log;
+    $self->_save_screenshot("step", "post");
     if ($log) {
         if (ref $result) {
-            ${$log->{scenario}->{rows}}[-1]->{step}->{result} =
-                $result->result;
+            $log->{step}->{result} = $result->result;
         }
         else {
-            ${$log->{scenario}->{rows}}[-1]->{step}->{result} =
-                '<missing>'; # Pherkin <= 0.56
+            $log->{step}->{result} = '<missing>'; # Pherkin <= 0.56
         }
         $self->_flush_log;
+        $log->{step} = undef;
     }
 }
 

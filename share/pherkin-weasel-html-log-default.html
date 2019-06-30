@@ -20,13 +20,24 @@
   <body>
     <h1 class="feature">[% feature.title | html %]</h1>
     <p>[% feature.satisfaction | html %]</p>
+
+    <section class="toc">
+      <ol class="toc">
+[% FOR scenario IN feature.scenarios -%]
+        <li><a href="#s[% loop.index %]">[% scenario.title | html %]</a></li>
+[% END -%]
+      </ol>
+    </section>
 [% FOR scenario IN feature.scenarios %]
     <section class="scenario">
-      <h2 class="scenario">[% scenario.title | html %]</h2>
+      <a name="s[% loop.index %]">
+        <h2 class="scenario">[% scenario.title | html %]</h2>
+      </a>
       <table>
         <colgroup>
           <col class="steps">
           <col class="session-log">
+          <col class="results">
         </colgroup>
 [% FOR row IN scenario.rows -%]
 [% IF row.screenshot -%]
@@ -42,14 +53,15 @@
         <tr class="step">
           <td>[% row.step.text | html %]</td>
           <td></td>
-          <td>[% row.step.result | html %]</td>
+          <td class="[% row.step.result %]">[% row.step.result | html %]</td>
         </tr>
-[% ELSIF row.log -%]
-        <tr class="result">
+[% FOR log IN row.step.logs -%]
+        <tr class="log">
           <td></td>
+          <td>[% log.text | html %]</td>
           <td></td>
-          <td>[% row.log.text | html %]</td>
         </tr>
+[% END -%]
 [% END -%]
 [% END -%]
       </table>
