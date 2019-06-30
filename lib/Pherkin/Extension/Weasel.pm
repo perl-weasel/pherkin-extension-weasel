@@ -5,7 +5,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
 =head1 VERSION
 
-0.08
+0.09
 
 =head1 SYNOPSIS
 
@@ -47,7 +47,7 @@ package Pherkin::Extension::Weasel;
 use strict;
 use warnings;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 
 use Digest::MD5 qw(md5_hex);
