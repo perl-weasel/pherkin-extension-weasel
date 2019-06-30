@@ -138,6 +138,9 @@ sub _update_index {
     @yaml_snippets = sort { $a->{$order} cmp $b->{$order} } @yaml_snippets;
     my $vars = {
         features => \@yaml_snippets,
+        program => {
+            version => $VERSION,
+        },
     };
     my $engine = $self->_log->{template};
     $engine->process(
