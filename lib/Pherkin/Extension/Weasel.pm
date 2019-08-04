@@ -53,6 +53,7 @@ our $VERSION = '0.09';
 use Digest::MD5 qw(md5_hex);
 use File::Find::Rule;
 use File::Share ':all';
+use List::Util qw(any);
 use Module::Runtime qw(use_module);
 use Template;
 use Test::BDD::Cucumber::Extension;
@@ -278,8 +279,15 @@ sub pre_scenario {
     my ($self, $scenario, $feature_stash, $stash) = @_;
 
     if (grep { $_ eq 'weasel'} @{$scenario->tags}) {
+        if (any { $_ eq 'weasel-one-session' } @{$scenario->tags}
+            && $feature_stash->{ext_wsl}) {
+            $stash->{ext_wsl} = $feature_stash->{ext_wsl};
+        }
         $stash->{ext_wsl} = $self->_weasel->session;
         $self->_weasel->session->start;
+        if (any { $_ eq 'weasel-one-session' } @{$scenario->tags}) {
+            $feature_stash->{ext_wsl} = $stash->{ext_wsl};
+        }
 
         my $log = $self->_log;
         if ($log) {
@@ -312,6 +320,7 @@ sub post_scenario {
     }
 
     $stash->{ext_wsl}->stop
+        unless any { $_ eq 'weasel-one-session' } @{$scenario->tags};
 }
 
 sub pre_step {
