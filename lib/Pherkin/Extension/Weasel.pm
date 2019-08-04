@@ -244,6 +244,7 @@ sub pre_feature {
     if ($log) {
         my $feature_log = {
             scenarios => [],
+            failing_scenarios => [],
             title => $feature->name,
             filename => $feature->document->filename,
             satisfaction => join("\n",
@@ -304,6 +305,9 @@ sub post_scenario {
     my $log = $self->_log;
     if ($log) {
         $self->_flush_log;
+        $log->{feature}->{failing} = 1
+            if $log->{scenario}->{failing};
+        push @{$log->{feature}->{failing_scenarios}}, $log->{scenario};
         $log->{scenario} = undef;
     }
 
@@ -321,7 +325,7 @@ sub pre_step {
     if ($log) {
         my $step = {
             text => $context->step->verb_original
-                . ' ' . $context->step->text,
+                . ' ' . $context->text, # includes filled outline placeholders
             logs => [],
             result => '',
         };
@@ -340,6 +344,8 @@ sub post_step {
     if ($log) {
         if (ref $result) {
             $log->{step}->{result} = $result->result;
+            $log->{scenario}->{failing} = 1
+                if $result->result eq 'failing';
         }
         else {
             $log->{step}->{result} = '<missing>'; # Pherkin <= 0.56

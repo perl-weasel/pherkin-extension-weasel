@@ -6,8 +6,12 @@
       table.features {
          border: 0;
       }
-      table.features tr:hover {
+      table.features tr:hover,
+      table.features tr.failing:hover {
          background-color: gainsboro;
+      }
+      table.features tr.failing {
+         background-color: tomato;
       }
       table.features td:hover {
          cursor: pointer;
@@ -34,11 +38,17 @@
     <section class="index">
       <table class="features">
 [% FOR feature IN features %]
-        <tr class="feature"
+        <tr class="feature [% IF feature.failing; 'failing' ; END %]"
             data-href="[% feature.log_filename | url | html %]"
             onclick="rc(this, event)">
           <td class="filename">[% feature.filename | html %]</td>
           <td class="title">[% feature.title | html %]</td>
+          <td class="total">[% feature.scenarios.size %]</td>
+[% IF feature.failing_scenarios.size -%]
+          <td class="failing">[% feature.failing_scenarios.size %]</td>
+[% ELSE %]
+          <td></td>
+[% END -%]
         </tr>
 [% END -%]
       </table>
