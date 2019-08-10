@@ -38,14 +38,14 @@
     <section class="index">
       <table class="features">
 [% FOR feature IN features %]
-        <tr class="feature [% IF feature.failing; 'failing' ; END %]"
+        <tr class="feature [% IF feature.stats.fail; 'failing' ; END %]"
             data-href="[% feature.log_filename | url | html %]"
             onclick="rc(this, event)">
           <td class="filename">[% feature.filename | html %]</td>
           <td class="title">[% feature.title | html %]</td>
-          <td class="total">[% feature.scenarios.size %]</td>
-[% IF feature.failing_scenarios.size -%]
-          <td class="failing">[% feature.failing_scenarios.size %]</td>
+          <td class="total">[% feature.stats.fail+feature.stats.success %]</td>
+[% IF feature.stats.fail -%]
+          <td class="failing">[% feature.stats.fail %]</td>
 [% ELSE %]
           <td></td>
 [% END -%]

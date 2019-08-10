@@ -85,8 +85,8 @@ title: [% feature.title | html %]
 filename: [% feature.filename | html %]
 log_filename: [% feature.log_filename | html %]
 stats:
-  success: [% feature.successes | html %]
-  fail: [% feature.failures | html %]
+  success: [% feature.successes.size %]
+  fail: [% feature.failures.size %]
 ---
 -->
   </body>

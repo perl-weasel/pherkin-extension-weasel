@@ -315,9 +315,13 @@ sub post_scenario {
     my $log = $self->_log;
     if ($log) {
         $self->_flush_log;
-        $log->{feature}->{failing} = 1
-            if $log->{scenario}->{failing};
-        push @{$log->{feature}->{failing_scenarios}}, $log->{scenario};
+        if ($log->{scenario}->{failing}) {
+            push @{$log->{feature}->{failures}}, $log->{scenario};
+            $log->{feature}->{failing} = 1;
+        }
+        else {
+            push @{$log->{feature}->{successes}}, $log->{scenario};
+        }
         $log->{scenario} = undef;
     }
 
