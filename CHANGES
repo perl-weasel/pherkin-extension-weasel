@@ -1,8 +1,8 @@
 ** 0.10 / 2019-08-04
    - Add visual indication of features with failed scenarios
    - Run all scenarios of a feature in a single Weasel session
-     when tagged @weasel-single-session' (allows caching
-     of page assets)
+     when tagged @weasel-single-session' (opens the possibility of
+     caching page assets)
 
 ** 0.09 / 2019-06-30
    - Add table of contents to feature log files
