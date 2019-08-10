@@ -280,11 +280,13 @@ sub pre_scenario {
 
     if (grep { $_ eq 'weasel'} @{$scenario->tags}) {
         if (any { $_ eq 'weasel-one-session' } @{$scenario->tags}
-            && $feature_stash->{ext_wsl}) {
+            and $feature_stash->{ext_wsl}) {
             $stash->{ext_wsl} = $feature_stash->{ext_wsl};
         }
-        $stash->{ext_wsl} = $self->_weasel->session;
-        $self->_weasel->session->start;
+        else {
+            $stash->{ext_wsl} = $self->_weasel->session;
+            $self->_weasel->session->start;
+        }
         if (any { $_ eq 'weasel-one-session' } @{$scenario->tags}) {
             $feature_stash->{ext_wsl} = $stash->{ext_wsl};
         }
