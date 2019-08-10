@@ -10,7 +10,7 @@ requires 'Moose';
 requires 'Template';
 requires 'Test::BDD::Cucumber';
 requires 'Weasel';
-requires 'Weasel::Session';
+requires 'Weasel::Session', '0.11';
 # depend on the same YAML library as Test::BDD::Cucumber
 requires 'YAML::Syck';
 
