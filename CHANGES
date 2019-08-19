@@ -1,4 +1,8 @@
 
+0.12   2019-08-19
+       - Increase Weasel::Driver::Mock dependency (TestDep) to be in line with
+         the driver role version of this dist
+
 0.11   2019-08-10
        - Correct Weasel::Session dependency; the minimum should be 0.11
          as that provides the 'state' attribute
