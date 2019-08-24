@@ -245,7 +245,8 @@ sub pre_feature {
     if ($log) {
         my $feature_log = {
             scenarios => [],
-            failing_scenarios => [],
+            failures => [],
+            successes => [],
             title => $feature->name,
             filename => $feature->document->filename,
             satisfaction => join("\n",
