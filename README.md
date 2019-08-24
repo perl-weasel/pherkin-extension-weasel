@@ -7,7 +7,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
 # VERSION
 
-0.11
+0.13
 
 # SYNOPSIS
 

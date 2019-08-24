@@ -1,3 +1,5 @@
+0.13   2019-08-24
+       - Eliminate undefined value warning on template evaluation
 
 0.12   2019-08-19
        - Increase Weasel::Driver::Mock dependency (TestDep) to be in line with
