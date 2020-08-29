@@ -1,3 +1,6 @@
+0.15   2020-08-29
+       - Don't try to fetch undefined parameters so we can test for
+         proper handling of 'When I enter "" into "field"'
 
 0.14   2020-04-26
        - Add steps 'When I fill in:' and 'When I fill "<>" with "<>"'
@@ -65,5 +68,3 @@
 
 
 0.01   2016-06-23
-
-
