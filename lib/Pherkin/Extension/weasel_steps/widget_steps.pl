@@ -5,13 +5,6 @@ use warnings;
 
 use Test::BDD::Cucumber::StepFile;
 
-#!perl
-
-use strict;
-use warnings;
-
-use Test::BDD::Cucumber::StepFile;
-
 
 Then qr/I should see a (radio button|textbox|password box) "(.*)"/, sub {
     my $want_type = $1;
@@ -108,7 +101,6 @@ When qr/I enter (([^"].*)|"(.*)") into "(.+)"/, sub {
         "*labeled", text => $label);
     ok($element, "found element with label '$label'");
     $value ||= C->stash->{feature}->{$param} if $param;
-    return if !$value && !$param;
     $element->click;
     $element->clear;
     $element->send_keys($value);
