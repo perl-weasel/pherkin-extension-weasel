@@ -5,7 +5,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
 =head1 VERSION
 
-0.15
+0.16
 
 =head1 SYNOPSIS
 
@@ -77,6 +77,8 @@ has index_template => (is => 'ro', isa => 'Str',
 
 has logging_dir => (is => 'ro', isa => 'Maybe[Str]');
 
+has timestamps => (is => 'ro', isa => 'Bool', default => 0);
+
 has templates_dir => (is => 'ro', isa => 'Str',
                       default => sub {
                           my $dist = __PACKAGE__;
@@ -86,6 +88,9 @@ has templates_dir => (is => 'ro', isa => 'Str',
 
 our $tmp_disable_logging = 0;
 
+use Time::HiRes qw(time);
+use POSIX qw(strftime);
+
 sub _weasel_log_hook {
     my $self = shift;
     my ($event, $log_item, $something) = @_;
@@ -93,8 +98,14 @@ sub _weasel_log_hook {
 
     my $log = $self->_log;
     if ($log and not $tmp_disable_logging) {
+        my $date = '';
+        if ( $self->timestamps ) {
+            my $t = time;
+            $date = strftime "%H:%M:%S", localtime $t;
+            $date .= sprintf ".%06d ", ($t-int($t))*1000000; # without rounding
+        }
         push @{$log->{step}->{logs}}, {
-            text => $log_text
+            text => $date . $log_text
         };
     }
 }

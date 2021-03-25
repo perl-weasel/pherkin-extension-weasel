@@ -1,4 +1,7 @@
 
+0.17   2021-03-25
+       - Allow logging to be timestamped
+
 0.16   2023-07-24
        - Use 'field' instead of 'labeled' to find form elements for input,
          making sure that elements can be found by 'id', 'name' or 'title'
