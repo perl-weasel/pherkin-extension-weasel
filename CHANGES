@@ -1,3 +1,6 @@
+0.16   2021-03-25
+       - Allow logging to be timestamped
+
 0.15   2020-11-22
        - Fix uninitialized variable warning in input step "I enter X into Y"
        - Remove duplicated preamble in 'widget_steps.pl' step file
