@@ -61,8 +61,7 @@
 [% ELSIF row.step -%]
         <tbody class="step [% IF row.step.failing ; 'failing' ; END %]">
           <tr class="step">
-            <td>[% row.step.text | html %]</td>
-            <td></td>
+            <td colspan="2"><h3>[% row.step.text | html %]</h3></td>
             <td class="[% row.step.result.remove('[<>]') # compensate '<missing>'
                        %]">[% row.step.result | html %]</td>
           </tr>
