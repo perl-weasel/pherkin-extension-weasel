@@ -68,7 +68,7 @@
           </tr>
 [% FOR log IN row.step.logs -%]
           <tr class="log">
-            <td></td>
+            <td>[% log.timestamp | html %]</td>
             <td>[% log.text | html %]</td>
             <td></td>
           </tr>

@@ -98,14 +98,15 @@ sub _weasel_log_hook {
 
     my $log = $self->_log;
     if ($log and not $tmp_disable_logging) {
-        my $date = '';
+        my $timestamp = '';
         if ( $self->timestamps ) {
             my $t = time;
-            $date = strftime "%H:%M:%S", localtime $t;
-            $date .= sprintf ".%06d ", ($t-int($t))*1000000; # without rounding
+            $timestamp = strftime "%H:%M:%S", localtime $t;
+            $timestamp .= sprintf ".%06d ", ($t-int($t))*1000000; # without rounding
         }
         push @{$log->{step}->{logs}}, {
-            text => $date . $log_text
+            timestamp => $timestamp,
+            text => $log_text
         };
     }
 }
