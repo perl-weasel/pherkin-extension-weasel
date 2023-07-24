@@ -5,7 +5,7 @@ Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
 =head1 VERSION
 
-0.15
+0.16
 
 =head1 SYNOPSIS
 
@@ -47,7 +47,7 @@ package Pherkin::Extension::Weasel;
 use strict;
 use warnings;
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 
 use Digest::MD5 qw(md5_hex);
@@ -491,7 +491,7 @@ Bugs can be filed in the GitHub issue tracker for the Weasel project:
 =head1 SOURCE
 
 The source code repository for Weasel is at
- https://github.com/perl-weasel/weasel-driver-selenium2
+ L<https://github.com/perl-weasel/weasel-driver-selenium2>
 
 =head1 SUPPORT
 
@@ -500,7 +500,7 @@ L<perl-weasel@googlegroups.com|mailto:perl-weasel@googlegroups.com>.
 
 =head1 COPYRIGHT
 
- (C) 2016-2020  Erik Huelsmann
+ (C) 2016-2023  Erik Huelsmann
 
 Licensed under the same terms as Perl.
 

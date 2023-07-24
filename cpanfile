@@ -9,8 +9,8 @@ requires 'Module::Runtime';
 requires 'Moose';
 requires 'Template';
 requires 'Test::BDD::Cucumber';
-requires 'Weasel';
-requires 'Weasel::Session', '0.11';
+requires 'Weasel', '0.30';
+requires 'Weasel::Session', '0.30';
 # depend on the same YAML library as Test::BDD::Cucumber
 requires 'YAML::Syck';
 
