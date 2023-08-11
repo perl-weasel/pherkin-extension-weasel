@@ -57,7 +57,7 @@ use List::Util qw(any);
 use Module::Runtime qw(use_module);
 use Template;
 use Test::BDD::Cucumber::Extension;
-use YAML::Syck qw(Load);
+use YAML qw(Load);
 
 use Weasel;
 use Weasel::Session;

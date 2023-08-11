@@ -12,7 +12,7 @@ requires 'Test::BDD::Cucumber';
 requires 'Weasel', '0.30';
 requires 'Weasel::Session', '0.30';
 # depend on the same YAML library as Test::BDD::Cucumber
-requires 'YAML::Syck';
+requires 'YAML', '0.15';
 
 
 on test => sub {
