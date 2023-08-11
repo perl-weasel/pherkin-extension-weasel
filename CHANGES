@@ -1,8 +1,6 @@
 
-0.17   2021-03-25
-       - Allow logging to be timestamped
-
 0.17   2023-08-11
+       - Allow logging to be timestamped
        - Add support for Pherkin 0.86+ style tags (meaning: starting with '@')
        - Depend on the same YAML parser as Pherkin again (YAML)
        - Auto-update $VERSION and '=head1 VERSION' during release
