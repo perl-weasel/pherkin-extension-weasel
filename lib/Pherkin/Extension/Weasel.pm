@@ -3,10 +3,6 @@
 
 Pherkin::Extension::Weasel - Pherkin extension for web-testing
 
-=head1 VERSION
-
-0.16
-
 =head1 SYNOPSIS
 
    # In the pherkin config file t/.pherkin.yaml:
@@ -46,9 +42,6 @@ package Pherkin::Extension::Weasel;
 
 use strict;
 use warnings;
-
-our $VERSION = '0.16';
-
 
 use Digest::MD5 qw(md5_hex);
 use File::Find::Rule;
