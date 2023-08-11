@@ -2,6 +2,11 @@
 0.17   2021-03-25
        - Allow logging to be timestamped
 
+0.17   2023-08-11
+       - Add support for Pherkin 0.86+ style tags (meaning: starting with '@')
+       - Depend on the same YAML parser as Pherkin again (YAML)
+       - Auto-update $VERSION and '=head1 VERSION' during release
+
 0.16   2023-07-24
        - Use 'field' instead of 'labeled' to find form elements for input,
          making sure that elements can be found by 'id', 'name' or 'title'
