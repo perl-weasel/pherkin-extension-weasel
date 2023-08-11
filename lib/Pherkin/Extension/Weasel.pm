@@ -284,8 +284,10 @@ sub post_feature {
 sub pre_scenario {
     my ($self, $scenario, $feature_stash, $stash) = @_;
 
-    if (grep { $_ eq 'weasel'} @{$scenario->tags}) {
-        if (any { $_ eq 'weasel-one-session' } @{$scenario->tags}
+    # Test::BDD::Cucumber versions <= 0.85 tags don't start with '@'
+    # later ones do...
+    if (grep { $_ =~ m/^\@?weasel$/ } @{$scenario->tags}) {
+        if (any { $_ =~ m/^\@?weasel-one-session$/ } @{$scenario->tags}
             and $feature_stash->{ext_wsl}) {
             $stash->{ext_wsl} = $feature_stash->{ext_wsl};
         }
@@ -293,7 +295,7 @@ sub pre_scenario {
             $stash->{ext_wsl} = $self->_weasel->session;
             $self->_weasel->session->start;
         }
-        if (any { $_ eq 'weasel-one-session' } @{$scenario->tags}) {
+        if (any { $_ =~ m/^\@?weasel-one-session$/ } @{$scenario->tags}) {
             $feature_stash->{ext_wsl} = $stash->{ext_wsl};
         }
 
@@ -332,7 +334,7 @@ sub post_scenario {
     }
 
     $stash->{ext_wsl}->stop
-        unless any { $_ eq 'weasel-one-session' } @{$scenario->tags};
+        unless any { $_ =~ m/^\@?weasel-one-session$/ } @{$scenario->tags};
 }
 
 sub pre_step {
