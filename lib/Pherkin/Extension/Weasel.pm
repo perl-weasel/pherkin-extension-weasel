@@ -145,7 +145,7 @@ sub _update_index {
     my $vars = {
         features => \@yaml_snippets,
         program => {
-            version => $VERSION,
+            version => do { no strict 'refs'; ${__PACKAGE__ . '::VERSION'} },
         },
     };
     my $engine = $self->_log->{template};
