@@ -424,7 +424,7 @@ has dom_save_events => (is => 'ro',
                         },
     );
 
-=has logging_dir
+=item logging_dir
 
 Name of directory to store the browser-interaction logs
 
