@@ -1,4 +1,7 @@
 
+0.19   2025-05-23
+       - Fix POD tag
+
 0.18   2025-05-22
        - Add DOM tree saving on failed steps
        - Add module documentation
