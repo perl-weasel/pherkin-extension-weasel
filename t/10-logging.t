@@ -39,33 +39,49 @@ my $ext = Pherkin::Extension::Weasel->new(
                 driver => {
                     drv_name => 'Weasel::Driver::Mock',
                     states => [
-                        {
+                        { # 0
                             cmd => 'screenshot',
                             content => 'pre-step1',
                         },
-                        {
+                        { # 1
                             cmd => 'find_all',
                             ret_array => [ 'abc', 'def' ],
                         },
                         # requested as part of the element->widget mapper
-                        {
+                        { # 2
                             cmd => 'tag_name', # abc
                             ret => 'div',
                         },
-                        {
+                        { # 3
                             cmd => 'tag_name', # def
                             ret => 'div',
                         },
                         # requested as part of the logging function
-                        {
+                        { # 4
                             cmd => 'tag_name', # abc
                             ret => 'div',
                         },
-                        {
+                        { # 5
+                            cmd => 'get_attribute', # abc
+                            ret => 'div',
+                        },
+                        { # 6
+                            cmd => 'get_attribute', # abc
+                            ret => 'div',
+                        },
+                        { # 7
                             cmd => 'tag_name', # def
                             ret => 'div',
                         },
-                        {
+                        { # 8
+                            cmd => 'get_attribute', # def
+                            ret => 'div',
+                        },
+                        { # 9
+                            cmd => 'get_attribute', # def
+                            ret => 'div',
+                        },
+                        { # 10
                             cmd => 'screenshot',
                             content => 'post-scenario2',
                         },

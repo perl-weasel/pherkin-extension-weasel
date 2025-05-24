@@ -1,4 +1,9 @@
 
+0.20   2025-05-24
+       - Fix test expectations for Weasel 0.32
+         Increase Weasel dependency to 0.32 (from 0.30) because of
+         tight coupling between t/10-logging.t and Weasel
+
 0.19   2025-05-23
        - Fix POD tag
 
